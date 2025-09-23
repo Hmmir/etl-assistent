@@ -1,0 +1,103 @@
+name: etl-assistant-moscow
+region: ru-central1
+
+services:
+  backend:
+    type: python
+    runtime: python-3.10
+    build:
+      command: pip install -r requirements.txt
+    start: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    environment:
+      - YANDEX_CLOUD_FOLDER_ID=${YANDEX_CLOUD_FOLDER_ID}
+      - YANDEX_GPT_API_KEY=${YANDEX_GPT_API_KEY}
+      - YANDEX_CLOUD_IAM_TOKEN=${YANDEX_CLOUD_IAM_TOKEN}
+      - ENVIRONMENT=production
+      - CORS_ORIGINS=https://etl-assistant-moscow.sourcecraft.dev
+    resources:
+      cpu: 2
+      memory: 4Gi
+      storage: 10Gi
+    health_check:
+      path: /health
+      interval: 30s
+      
+  frontend:
+    type: nodejs
+    runtime: node-18
+    build:
+      command: |
+        cd frontend
+        npm install
+        npm run build
+    start: |
+      cd frontend
+      npx serve -s build -l $PORT
+    environment:
+      - REACT_APP_API_URL=https://backend-etl-assistant-moscow.sourcecraft.dev
+    resources:
+      cpu: 1
+      memory: 2Gi
+      
+databases:
+  postgres:
+    type: postgresql
+    version: "15"
+    plan: standard
+    storage: 20Gi
+    database: etl_assistant
+    
+  clickhouse:
+    type: clickhouse
+    version: "23.8"
+    plan: standard
+    storage: 50Gi
+    
+  redis:
+    type: redis
+    version: "7.0"
+    plan: basic
+    
+orchestration:
+  airflow:
+    type: apache-airflow
+    version: "2.7.2"
+    workers: 2
+    storage: 10Gi
+    dags_folder: /app/airflow/dags
+    
+monitoring:
+  enabled: true
+  prometheus: true
+  grafana: true
+  
+scaling:
+  backend:
+    min_instances: 1
+    max_instances: 5
+    target_cpu: 70%
+    target_memory: 80%
+    
+  frontend:
+    min_instances: 1
+    max_instances: 3
+    target_cpu: 60%
+    
+load_balancer:
+  type: application
+  ssl: true
+  health_check: /health
+  timeout: 30s
+  
+env_vars:
+  production:
+    - name: DEBUG
+      value: "false"
+    - name: LOG_LEVEL
+      value: "INFO"
+    - name: MAX_FILE_SIZE
+      value: "500MB"
+    - name: BATCH_SIZE
+      value: "10000"
+    - name: REDIS_TTL
+      value: "3600"

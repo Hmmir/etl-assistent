@@ -1,0 +1,147 @@
+# ETL Assistant Demo Infrastructure
+# Автоматически сгенерирован: 2025-09-22
+
+name: etl-assistant-demo
+
+services:
+  # ClickHouse - основное аналитическое хранилище
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    container_name: etl_clickhouse
+    ports:
+      - "9000:9000"   # Native protocol
+      - "8123:8123"   # HTTP interface
+    environment:
+      - CLICKHOUSE_DB=etl_data
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=demo123
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./init-clickhouse.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - etl_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # PostgreSQL - транзакционное хранилище  
+  postgres:
+    image: postgres:15-alpine
+    container_name: etl_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=etl_metadata
+      - POSTGRES_USER=etl_user
+      - POSTGRES_PASSWORD=demo123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - etl_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U etl_user -d etl_metadata"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Redis - кэш и очереди
+  redis:
+    image: redis:7-alpine
+    container_name: etl_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - etl_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Apache Airflow - оркестрация
+  airflow-init:
+    image: apache/airflow:2.7.2
+    container_name: etl_airflow_init
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://etl_user:demo123@postgres:5432/etl_metadata
+      - AIRFLOW__CORE__FERNET_KEY=YlCImzjge_TeZc7jGvnKrYjNBUeTeSEXZr-oB3nVJJ8=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=demo_secret_key_for_airflow
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - etl_network
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+      "
+
+  airflow-webserver:
+    image: apache/airflow:2.7.2
+    container_name: etl_airflow_webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://etl_user:demo123@postgres:5432/etl_metadata
+      - AIRFLOW__CORE__FERNET_KEY=YlCImzjge_TeZc7jGvnKrYjNBUeTeSEXZr-oB3nVJJ8=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=demo_secret_key_for_airflow
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    ports:
+      - "8080:8080"
+    depends_on:
+      - airflow-init
+      - postgres
+      - redis
+    networks:
+      - etl_network
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: airflow webserver
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.2
+    container_name: etl_airflow_scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://etl_user:demo123@postgres:5432/etl_metadata
+      - AIRFLOW__CORE__FERNET_KEY=YlCImzjge_TeZc7jGvnKrYjNBUeTeSEXZr-oB3nVJJ8=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=demo_secret_key_for_airflow
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    depends_on:
+      - airflow-init
+      - postgres
+      - redis
+    networks:
+      - etl_network
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: airflow scheduler
+
+volumes:
+  clickhouse_data:
+  postgres_data:
+
+networks:
+  etl_network:
+    driver: bridge

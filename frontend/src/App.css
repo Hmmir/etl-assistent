@@ -1,0 +1,675 @@
+/* Стили для ETL Assistant */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.App-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.App-header p {
+  font-size: 1.1rem;
+  color: #718096;
+}
+
+.App-main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Секция загрузки */
+.upload-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upload-section h2 {
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.file-input-group, .description-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-input-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.file-input {
+  padding: 0.75rem;
+  border: 2px dashed #cbd5e0;
+  border-radius: 8px;
+  background: #f7fafc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input:hover {
+  border-color: #667eea;
+  background: #edf2f7;
+}
+
+.file-info {
+  background: #e6fffa;
+  border: 1px solid #38b2ac;
+  border-radius: 8px;
+  padding: 1rem;
+  color: #2c7a7b;
+}
+
+.file-info p {
+  margin: 0.25rem 0;
+}
+
+.description-input {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.description-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.upload-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.upload-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.upload-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Статус сообщения */
+.status-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.status-message.success {
+  background: #f0fff4;
+  color: #22543d;
+  border: 1px solid #9ae6b4;
+}
+
+.status-message.error {
+  background: #fed7d7;
+  color: #742a2a;
+  border: 1px solid #fc8181;
+}
+
+/* Секция пайплайна */
+.pipeline-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pipeline-section h2 {
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.pipeline-card {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #667eea;
+}
+
+.pipeline-card h3 {
+  color: #4a5568;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.storage-recommendation {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.storage-recommendation strong {
+  color: #667eea;
+  font-size: 1.3rem;
+}
+
+.code-block {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.etl-steps {
+  padding-left: 1.5rem;
+}
+
+.etl-steps li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.explanation {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  line-height: 1.6;
+}
+
+/* Действия с пайплайном */
+.pipeline-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.primary {
+  background: #48bb78;
+  color: white;
+}
+
+.action-button.primary:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+}
+
+.action-button.secondary {
+  background: #e2e8f0;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+}
+
+.action-button.secondary:hover {
+  background: #edf2f7;
+  transform: translateY(-1px);
+}
+
+/* Footer */
+.App-footer {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  margin-top: 2rem;
+}
+
+/* Responsive design */
+/* Стили для результатов выполнения пайплайна */
+.execution-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  border-left: 5px solid #28a745;
+}
+
+.pipeline-card.success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-left: 5px solid #28a745;
+}
+
+.pipeline-card.error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  border-left: 5px solid #dc3545;
+}
+
+.execution-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  border-left: 3px solid #007bff;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.execution-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stage-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+}
+
+.stage-name {
+  font-weight: bold;
+  min-width: 120px;
+  color: #495057;
+}
+
+.stage-status {
+  color: #28a745;
+}
+
+.generated-files {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0.5rem;
+}
+
+.file-item {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  border-left: 3px solid #6c757d;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.next-steps {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.next-steps li {
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.deployment-status {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #d1ecf1 0%, #b8daff 100%);
+  border: 1px solid #bee5eb;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #155724;
+}
+
+.action-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .App-main {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .upload-section, .pipeline-section, .execution-section {
+    padding: 1.5rem;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .pipeline-actions {
+    flex-direction: column;
+  }
+  
+  .execution-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .generated-files {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Стили для раздела "Следующие шаги" */
+.next-steps {
+  margin: 0;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  list-style-type: decimal;
+}
+
+.next-steps li {
+  margin: 10px 0;
+  font-weight: 500;
+  color: #2c3e50;
+  line-height: 1.6;
+  padding: 5px 0;
+}
+
+.next-steps li:hover {
+  background-color: #e9ecef;
+  border-radius: 4px;
+  padding: 5px 8px;
+  transition: all 0.3s ease;
+}
+
+/* Стили для интерактивной инфраструктуры */
+.infrastructure-status {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.infrastructure-status h4 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 1.1em;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.service-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.service-status:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.service-name {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9em;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.status-badge.ready {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.starting {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.unknown {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.no-infrastructure {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.action-steps {
+  margin: 20px 0;
+}
+
+.step-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin: 10px 0;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.step-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.step-content {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.step-content h4 {
+  margin: 0 0 5px 0;
+  color: #495057;
+  font-size: 1.1em;
+}
+
+.step-content p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.step-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  font-size: 0.95em;
+}
+
+.step-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.step-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.step-button.primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+}
+
+.step-button.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3, #004085);
+}
+
+.step-button.secondary {
+  background: linear-gradient(135deg, #6c757d, #495057);
+  color: white;
+}
+
+.step-button.secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #495057, #343a40);
+}
+
+.step-button.success {
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+  color: white;
+}
+
+.step-button.success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1e7e34, #155724);
+}
+
+.step-button.danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+}
+
+.step-button.danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+}
+
+.deployment-result {
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid;
+}
+
+.deployment-result.success {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.deployment-result.error {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.deployment-result h4 {
+  margin: 0 0 10px 0;
+}
+
+.deployment-result p {
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+}
+
+.endpoints-info {
+  background: rgba(255,255,255,0.8);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.endpoints-info h5 {
+  margin: 0 0 10px 0;
+  color: #495057;
+}
+
+.endpoints-info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.endpoints-info li {
+  margin: 5px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .step-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .step-content {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .step-button {
+    width: 100%;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
