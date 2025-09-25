@@ -17,6 +17,7 @@ from .etl_generators import PythonETLGenerator, SQLScriptGenerator, ConfigGenera
 from .airflow_generator import AirflowDAGGenerator, AirflowConfigGenerator
 from .infrastructure_manager import InfrastructureManager
 from .kafka_generator import KafkaStreamingGenerator
+from .yandexgpt_client import yandex_gpt_client
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -76,9 +77,64 @@ async def health_check():
         "service": "etl-assistant-api",
         "analyzers_loaded": bool(data_analyzer and storage_recommender),
         "streaming_support": True,
+        "yandexgpt_configured": yandex_gpt_client.is_configured(),
         "supported_sources": ["CSV", "JSON", "XML", "PostgreSQL", "ClickHouse", "Kafka (streaming)"],
         "supported_targets": ["PostgreSQL", "ClickHouse", "HDFS", "Kafka"]
     }
+
+
+@app.get("/yandexgpt/status")
+async def yandexgpt_status():
+    """
+    Статус интеграции с YandexGPT
+    """
+    try:
+        status = yandex_gpt_client.get_status()
+        return {
+            "status": "success",
+            "yandexgpt": status,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+
+@app.post("/yandexgpt/test")
+async def test_yandexgpt(test_prompt: dict):
+    """
+    Тестирование YandexGPT API
+    """
+    try:
+        prompt = test_prompt.get("prompt", "Привет! Как дела?")
+        
+        async with yandex_gpt_client as gpt:
+            response = await gpt._make_request(prompt, max_tokens=200)
+            
+        if response:
+            return {
+                "status": "success",
+                "prompt": prompt,
+                "response": response,
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "status": "error",
+                "error": "Нет ответа от YandexGPT",
+                "timestamp": datetime.now().isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Ошибка тестирования YandexGPT: {e}")
+        return {
+            "status": "error",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 @app.post("/generate_streaming_pipeline")
