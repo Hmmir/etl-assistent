@@ -1,0 +1,22 @@
+order_id,customer_id,product_name,quantity,price,order_date,status
+1001,C001,Laptop,1,89999.00,2024-01-15,completed
+1002,C002,Smartphone,2,45000.00,2024-01-16,completed
+1003,C001,Headphones,1,3500.00,2024-01-17,pending
+1004,C003,Tablet,1,35000.00,2024-01-17,completed
+1005,C004,Monitor,2,25000.00,2024-01-18,shipped
+1006,C002,Keyboard,1,2500.00,2024-01-18,completed
+1007,C005,Mouse,3,800.00,2024-01-19,pending
+1008,C003,Webcam,1,4500.00,2024-01-19,completed
+1009,C006,Printer,1,15000.00,2024-01-20,shipped
+1010,C004,Scanner,1,8000.00,2024-01-20,completed
+1011,C007,Router,2,3500.00,2024-01-21,pending
+1012,C005,USB Hub,4,500.00,2024-01-21,completed
+1013,C008,External HDD,1,6000.00,2024-01-22,shipped
+1014,C006,SSD,2,12000.00,2024-01-22,completed
+1015,C009,RAM Module,4,3000.00,2024-01-23,completed
+1016,C007,Cooling Fan,2,1200.00,2024-01-23,pending
+1017,C010,Power Supply,1,7500.00,2024-01-24,shipped
+1018,C008,Graphics Card,1,55000.00,2024-01-24,completed
+1019,C009,Motherboard,1,18000.00,2024-01-25,completed
+1020,C010,CPU,1,32000.00,2024-01-25,pending
+
